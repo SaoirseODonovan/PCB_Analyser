@@ -417,8 +417,17 @@ public class Controller {
                 for (int y = 0; y < image.getHeight(); y++) {
                         for (int x = 0; x < image.getWidth(); x++) {
                                 Color color = pixelReader.getColor(x, y);
-                                if (color.getGreen() <= color.getRed() + color.getBlue()) {
-                                        pixelWriter.setColor(x, y,Color.BLACK);
+//                                if (color.getGreen() <= color.getRed() + color.getBlue()) {
+//                                        pixelWriter.setColor(x, y,Color.BLACK);
+//                                }
+                                if (col.getRed() > col.getRed() - 0.15 && col.getRed() < col.getRed() + 0.15 &&
+                                        col.getGreen() > col.getGreen() - 0.15 && col.getGreen() < col.getGreen() + 0.15 &&
+                                        col.getBlue() > col.getBlue() - 0.15 && col.getBlue() < col.getBlue() + 0.15 &&
+                                        col.getHue() > col.getHue() - 1 && col.getHue() < col.getHue() + 1) {
+                                        pixelWriter.setColor(x, y, Color.color(0, 0, 0));
+                                }
+                                else {
+                                        pixelWriter.setColor(x, y, Color.color(1,1,1));
                                 }
 
                         }
@@ -427,6 +436,8 @@ public class Controller {
                 componentChoose.setImage(writableImage);
         }
 }
+
+
              //   }
 //        }
 //}
