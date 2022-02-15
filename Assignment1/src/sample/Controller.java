@@ -20,6 +20,8 @@ import javafx.scene.control.Slider;
 import javax.swing.*;
 import java.io.File;
 
+import static java.awt.Color.BLACK;
+
 
 public class Controller {
 
@@ -80,6 +82,24 @@ public class Controller {
         public ImageView componentChoose;
 
         @FXML
+        public Label blueColor;
+
+        @FXML
+        public Label greenColor;
+
+        @FXML
+        public Label redColor;
+
+        @FXML
+        public Label brightness;
+
+        @FXML
+        public Label saturation;
+
+        @FXML
+        public Label hue;
+
+        @FXML
         private ImageView imageView;
 
         @FXML
@@ -88,11 +108,16 @@ public class Controller {
         @FXML
         private Menu menu;
 
+        public Color col;
+
         @FXML
         public void initialize() {
-                imageHeight.setVisible(false);
-                imageWidth.setVisible(false);
-                fileName.setVisible(false);
+                blueColor.setVisible(false);
+                redColor.setVisible(false);
+                greenColor.setVisible(false);
+                saturation.setVisible(false);
+                brightness.setVisible(false);
+                hue.setVisible(false);
                 rgbTab.setDisable(true);
                 System.out.println(System.currentTimeMillis());
 
@@ -103,7 +128,8 @@ public class Controller {
                         // Color col = pr.getColor(Integer.parseInt(String.valueOf(e.getX())),Integer.parseInt(String.valueOf(e.getY())));
                         int width = (int) e.getX();
                         int height = (int) e.getY();
-                        Color col = pr.getColor(width, height);
+                        col = pr.getColor(width, height);
+
 
                         System.out.println("Hue: " + col.getHue()); //scale online
                         System.out.println("Saturation: " + col.getSaturation()); //between 0 and 1
@@ -112,6 +138,23 @@ public class Controller {
         }
 
 
+
+        public void displayDetails(MouseEvent mouseEvent) {
+                blueColor.setVisible(true);
+                redColor.setVisible(true);
+                greenColor.setVisible(true);
+                saturation.setVisible(true);
+                brightness.setVisible(true);
+                hue.setVisible(true);
+                blueColor.setText("Blue:" + String.format("%.2f", col.getBlue()));
+                redColor.setText("Red: " +  String.format("%.2f", col.getRed()));
+                greenColor.setText("Green: " +  String.format("%.2f", col.getGreen()));
+                saturation.setText("Saturation: " +  String.format("%.2f" , col.getSaturation()));
+                brightness.setText("Brightness: " +  String.format("%.2f", col.getBrightness()));
+                hue.setText("Hue: " +  String.format("%.2f", col.getHue()));
+
+        }
+
         public void openImage(ActionEvent actionEvent) {
                 //https://www.youtube.com/watch?v=AS0NhRKyRa4&t=15s
                 System.out.println("Open file");
@@ -119,7 +162,6 @@ public class Controller {
 
                 File file = fileChooser.showOpenDialog(stage);
                 System.out.println("Chosen file: " + file);
-                fileName.setText("File name: " + file);
                 Image chosenImage = new Image(file.toURI().toString(), imageView.getFitWidth(), imageView.getFitHeight(), false, true);
 
                 imageView.setImage(chosenImage);
@@ -252,16 +294,6 @@ public class Controller {
 
         }
 
-        public void displayDetails(MouseEvent mouseEvent) {
-                imageHeight.setVisible(true);
-                imageWidth.setVisible(true);
-                fileName.setVisible(true);
-                imageWidth.setText("Image width: " + imageView.getFitWidth());
-                imageHeight.setText("Image height: " + imageView.getFitHeight());
-                System.out.println(System.currentTimeMillis());
-                System.out.println(System.nanoTime());
-        }
-
         public void adjustSaturation(MouseEvent mouseEvent) {
 
         }
@@ -388,12 +420,6 @@ public class Controller {
                                 if (color.getGreen() <= color.getRed() + color.getBlue()) {
                                         pixelWriter.setColor(x, y,Color.BLACK);
                                 }
-//                                int width = (int) mouseEvent.getX();
-//                                int height = (int) mouseEvent.getY();
-//
-//                                double hue = image.getPixelReader().getColor(width, height).getHue();
-//
-//                                Color col = pixelReader.getColor(width, height);
 
                         }
                 }
