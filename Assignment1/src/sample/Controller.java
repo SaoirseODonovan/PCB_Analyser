@@ -100,6 +100,24 @@ public class Controller {
         public Label hue;
 
         @FXML
+        public Label blueVal;
+
+        @FXML
+        public Label greenVal;
+
+        @FXML
+        public Label redVal;
+
+        @FXML
+        public Label hueVal;
+
+        @FXML
+        public Label brightVal;
+
+        @FXML
+        public Label satVal;
+
+        @FXML
         private ImageView imageView;
 
         @FXML
@@ -110,50 +128,21 @@ public class Controller {
 
         public Color col;
 
+        public PixelReader pixelReader;
+
         @FXML
         public void initialize() {
-                blueColor.setVisible(false);
-                redColor.setVisible(false);
-                greenColor.setVisible(false);
-                saturation.setVisible(false);
-                brightness.setVisible(false);
-                hue.setVisible(false);
+//                blueColor.setVisible(false);
+//                redColor.setVisible(false);
+//                greenColor.setVisible(false);
+//                saturation.setVisible(false);
+//                brightness.setVisible(false);
+//                hue.setVisible(false);
                 rgbTab.setDisable(true);
-                System.out.println(System.currentTimeMillis());
-
-                imageView.setOnMouseClicked(e -> {
-                        PixelReader pr = imageView.getImage().getPixelReader();
-                        // Integer.parseInt(spaces.getText()));
-                        //doesn't like this line of code
-                        // Color col = pr.getColor(Integer.parseInt(String.valueOf(e.getX())),Integer.parseInt(String.valueOf(e.getY())));
-                        int width = (int) e.getX();
-                        int height = (int) e.getY();
-                        col = pr.getColor(width, height);
 
 
-                        System.out.println("Hue: " + col.getHue()); //scale online
-                        System.out.println("Saturation: " + col.getSaturation()); //between 0 and 1
-                        System.out.println("Brightness: " + col.getBrightness()); //between 0 and 1
-                });
         }
 
-
-
-        public void displayDetails(MouseEvent mouseEvent) {
-                blueColor.setVisible(true);
-                redColor.setVisible(true);
-                greenColor.setVisible(true);
-                saturation.setVisible(true);
-                brightness.setVisible(true);
-                hue.setVisible(true);
-                blueColor.setText("Blue:" + String.format("%.2f", col.getBlue()));
-                redColor.setText("Red: " +  String.format("%.2f", col.getRed()));
-                greenColor.setText("Green: " +  String.format("%.2f", col.getGreen()));
-                saturation.setText("Saturation: " +  String.format("%.2f" , col.getSaturation()));
-                brightness.setText("Brightness: " +  String.format("%.2f", col.getBrightness()));
-                hue.setText("Hue: " +  String.format("%.2f", col.getHue()));
-
-        }
 
         public void openImage(ActionEvent actionEvent) {
                 //https://www.youtube.com/watch?v=AS0NhRKyRa4&t=15s
@@ -402,38 +391,55 @@ public class Controller {
         }
 
         public void blackIdentify(MouseEvent mouseEvent) {
+                imageView.setOnMouseClicked(e -> {
+                        int x = (int) e.getX();
+                        int y = (int) e.getY();
+                        pixelReader = imageView.getImage().getPixelReader();
+
+                        redVal.setText(String.format("%.2f", pixelReader.getColor(x,y).getRed()));
+                        greenVal.setText(String.format("%.2f", pixelReader.getColor(x,y).getGreen()));
+                        satVal.setText(String.format("%.2f", pixelReader.getColor(x,y).getSaturation()));
+                        brightVal.setText(String.format("%.2f", pixelReader.getColor(x,y).getBrightness()));
+                        hueVal.setText(String.format("%.2f", pixelReader.getColor(x,y).getHue()));
+                        blueVal.setText(String.format("%.2f", pixelReader.getColor(x,y).getBlue()));
+
+                        Image image = imageView.getImage();
+                        PixelReader pixelReader = image.getPixelReader();
+                        WritableImage writableImage = new WritableImage(
+                                (int) image.getWidth(),
+                                (int) image.getHeight());
+                        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+                        for (int a = 0; a < image.getHeight(); a++) {
+                                for (int b = 0; b < image.getWidth(); b++) {
+
+                                        Color color = pixelReader.getColor(b, a);
+                                        var Red = color.getRed();
+                                        var Blue = color.getBlue();
+                                        var Green = color.getGreen();
+                                        var Hue = color.getHue();
+                                        var redLabel = Double.parseDouble(redVal.getText());
+                                        var greenLabel = Double.parseDouble(greenVal.getText());
+                                        var blueLabel = Double.parseDouble(blueVal.getText());
+                                        var hueLabel = Double.parseDouble(hueVal.getText());
+
+                                        if ((Red > redLabel - 0.50) && (Red < redLabel + 0.50) && (Blue > blueLabel - 0.50) && (Blue < blueLabel + 0.50) && (Green > greenLabel - 0.50) && (Green < greenLabel + 0.50) && (Hue > hueLabel - 3) && (Hue < hueLabel + 3)) {
+                                                pixelWriter.setColor(b, a, Color.BLACK);
+                                        }
+
+
+                                }
+                        }
+
+                        componentChoose.setImage(writableImage);
+
+                });
+
+
 
         }
 
         public void identifyComp(MouseEvent mouseEvent) {
-                Image image = imageView.getImage();
-                PixelReader pixelReader = image.getPixelReader();
-                ColorAdjust colorAdjust = new ColorAdjust();
-                WritableImage writableImage = new WritableImage(
-                        (int) image.getWidth(),
-                        (int) image.getHeight());
-                PixelWriter pixelWriter = writableImage.getPixelWriter();
-
-                for (int y = 0; y < image.getHeight(); y++) {
-                        for (int x = 0; x < image.getWidth(); x++) {
-                                Color color = pixelReader.getColor(x, y);
-//                                if (color.getGreen() <= color.getRed() + color.getBlue()) {
-//                                        pixelWriter.setColor(x, y,Color.BLACK);
-//                                }
-                                if (col.getRed() > col.getRed() - 0.15 && col.getRed() < col.getRed() + 0.15 &&
-                                        col.getGreen() > col.getGreen() - 0.15 && col.getGreen() < col.getGreen() + 0.15 &&
-                                        col.getBlue() > col.getBlue() - 0.15 && col.getBlue() < col.getBlue() + 0.15 &&
-                                        col.getHue() > col.getHue() - 1 && col.getHue() < col.getHue() + 1) {
-                                        pixelWriter.setColor(x, y, Color.color(0, 0, 0));
-                                }
-                                else {
-                                        pixelWriter.setColor(x, y, Color.color(1,1,1));
-                                }
-
-                        }
-                }
-
-                componentChoose.setImage(writableImage);
         }
 }
 
