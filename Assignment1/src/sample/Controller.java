@@ -411,7 +411,11 @@ public class Controller {
                         PixelWriter pixelWriter = writableImage.getPixelWriter();
 
                         arrayOfPixels = new int[(int) (image.getWidth() * image.getHeight())];
-                        System.out.println(Arrays.toString(arrayOfPixels));
+
+                        int i = 0;
+
+
+
 
                         for (int a = 0; a < image.getHeight(); a++) {
                                 for (int b = 0; b < image.getWidth(); b++) {
@@ -432,8 +436,11 @@ public class Controller {
                                                 && (Hue > hueLabel - 3) && (Hue < hueLabel + 3)) {
                                                 pixelWriter.setColor(b, a, Color.BLACK);
 
+                                                arrayOfPixels[i] = i;
+
 
                                         }
+i++;
 
 
                                 }
