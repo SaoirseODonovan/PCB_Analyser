@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -17,14 +15,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.control.Slider;
 
-import javax.swing.*;
 import java.io.File;
-
-import static java.awt.Color.BLACK;
+import java.util.Arrays;
 
 
 public class Controller {
 
+        @FXML
         public TabPane tabControlPane;
 
         @FXML
@@ -127,6 +124,8 @@ public class Controller {
         private Menu menu;
 
         public Color col;
+
+        public int[] arrayOfPixels;
 
         public PixelReader pixelReader;
 
@@ -391,6 +390,7 @@ public class Controller {
         }
 
         public void blackIdentify(MouseEvent mouseEvent) {
+
                 imageView.setOnMouseClicked(e -> {
                         int x = (int) e.getX();
                         int y = (int) e.getY();
@@ -410,6 +410,9 @@ public class Controller {
                                 (int) image.getHeight());
                         PixelWriter pixelWriter = writableImage.getPixelWriter();
 
+                        arrayOfPixels = new int[(int) (image.getWidth() * image.getHeight())];
+                        System.out.println(Arrays.toString(arrayOfPixels));
+
                         for (int a = 0; a < image.getHeight(); a++) {
                                 for (int b = 0; b < image.getWidth(); b++) {
 
@@ -423,8 +426,13 @@ public class Controller {
                                         var blueLabel = Double.parseDouble(blueVal.getText());
                                         var hueLabel = Double.parseDouble(hueVal.getText());
 
-                                        if ((Red > redLabel - 0.50) && (Red < redLabel + 0.50) && (Blue > blueLabel - 0.50) && (Blue < blueLabel + 0.50) && (Green > greenLabel - 0.50) && (Green < greenLabel + 0.50) && (Hue > hueLabel - 3) && (Hue < hueLabel + 3)) {
+                                        if ((Red > redLabel - 0.50) && (Red < redLabel + 0.50)
+                                                && (Blue > blueLabel - 0.50) && (Blue < blueLabel + 0.50)
+                                                && (Green > greenLabel - 0.50) && (Green < greenLabel + 0.50)
+                                                && (Hue > hueLabel - 3) && (Hue < hueLabel + 3)) {
                                                 pixelWriter.setColor(b, a, Color.BLACK);
+
+
                                         }
 
 
@@ -441,6 +449,19 @@ public class Controller {
 
         public void identifyComp(MouseEvent mouseEvent) {
         }
+
+        //Iterative version of find
+        public static int find(int[] arrayOfPixels, int id) {
+                while(arrayOfPixels[id]!=id) id= arrayOfPixels[id];
+                return id;
+        }
+
+        //Quick union of disjoint sets containing elements p and q (Version 1)
+        public static void union(int[] arrayOfPixels, int p, int q) {
+                arrayOfPixels[find(arrayOfPixels,q)]=p; //The root of q is made reference p
+        }
+
+
 }
 
 
