@@ -410,12 +410,12 @@ public class Controller {
                                 (int) image.getHeight());
                         PixelWriter pixelWriter = writableImage.getPixelWriter();
 
-                        arrayOfPixels = new int[(int) (image.getWidth() * image.getHeight())];
+                        int width = (int) image.getWidth();
+                        int height = (int) image.getHeight();
+
+                        arrayOfPixels = new int[width*height];
 
                         int i = 0;
-
-
-
 
                         for (int a = 0; a < image.getHeight(); a++) {
                                 for (int b = 0; b < image.getWidth(); b++) {
@@ -448,7 +448,21 @@ i++;
 
                         componentChoose.setImage(writableImage);
 
+                                for (int c = 0; c < height; c++) {
+                                        for (int d = 0; d < width; d++) {
+                                                if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
+                                                        union(arrayOfPixels, c*width + d, c*width + d + 1);
+                                                }
+                                                if (d < height - 1 && arrayOfPixels[c*width + d] != 0 && arrayOfPixels[c*width + d + width] != 0){
+                                                        union(arrayOfPixels, c*width + d, c*width+d+width);
+                                                }
+
+                                        }
+                                }
+
                 });
+
+
 
 
 
@@ -468,7 +482,29 @@ i++;
                 arrayOfPixels[find(arrayOfPixels,q)]=p; //The root of q is made reference p
         }
 
-
+//        //change this
+//        public void groupClusters() {
+//
+//                Image image = imageView.getImage();
+//                for(int i = 0; i < arrayOfPixels.length - 1; i++) {
+//                        if (i < arrayOfPixels.length - image.getWidth() && arrayOfPixels[i] != -1 && arrayOfPixels[(int) (i + image.getWidth())] != -1) {
+//                            union(arrayOfPixels, i, (int) (i + image.getWidth()));
+//                        }
+//                        if (i < arrayOfPixels.length && arrayOfPixels[i] != -1 && arrayOfPixels[i + 1] != -1) {
+//                                union(arrayOfPixels, i, i + 1);
+//                        }
+//                        //missing line here
+//                        //no use of find yet
+//
+//                }
+//
+//        }
+//
+////Draw on the rectangles
+//        public void rectangleMark() {
+//               // groupClusters();
+//
+//        }
 }
 
 
