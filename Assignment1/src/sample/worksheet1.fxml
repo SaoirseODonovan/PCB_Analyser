@@ -97,6 +97,18 @@
                               <Font name="Times New Roman Italic" size="12.0" />
                            </font>
                         </Label>
+                        <Button layoutX="861.0" layoutY="356.0" mnemonicParsing="false" onMouseClicked="#rectangleMark" text="Draw Rectangles" textFill="RED" />
+                        <Label layoutX="822.0" layoutY="389.0" text="Component counter:">
+                           <font>
+                              <Font name="Times New Roman" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="compCounter" layoutX="936.0" layoutY="389.0" text="test">
+                           <font>
+                              <Font name="Times New Roman" size="13.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="union" layoutX="861.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#unionFind" text="Union" />
                 </children>
                 </AnchorPane>
             </content>
