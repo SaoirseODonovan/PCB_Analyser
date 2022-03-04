@@ -438,10 +438,10 @@ public class Controller {
                     var blueLabel = Double.parseDouble(blueVal.getText());
                     var hueLabel = Double.parseDouble(hueVal.getText());
 
-                    if ((Red > redLabel - 0.50) && (Red < redLabel + 0.50)
-                            && (Blue > blueLabel - 0.50) && (Blue < blueLabel + 0.50)
-                            && (Green > greenLabel - 0.50) && (Green < greenLabel + 0.50)
-                            && (Hue > hueLabel - 3) && (Hue < hueLabel + 3)) {
+                    if ((Red > redLabel - 0.10) && (Red < redLabel + 0.10)
+                            && (Blue > blueLabel - 0.10) && (Blue < blueLabel + 0.10)
+                            && (Green > greenLabel - 0.10) && (Green < greenLabel + 0.10)
+                            && (Hue > hueLabel - 2) && (Hue < hueLabel + 2)) {
                         pixelWriter.setColor(b, a, Color.BLACK);
 
                         arrayOfPixels[i] = i;
@@ -461,7 +461,6 @@ public class Controller {
 
             componentChoose.setImage(writableImage);
 
-            int j = 0;
             for (int c = 0; c < height; c++) {
                 for (int d = 0; d < width; d++) {
                     if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
@@ -470,8 +469,6 @@ public class Controller {
                     if (c < height - 1 && arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + width] != 0) {
                         union(arrayOfPixels, c * width + d, c * width + d + width);
                     }
-                    j++;
-                    System.out.println(j);
                 }
 
             }
@@ -554,10 +551,11 @@ public class Controller {
             componentLabel.setFill(Color.TRANSPARENT);
 
         }
+    }
         // groupClusters();
 
     }
-}
+
 
 //        //change this
 //        public void groupClusters() {
