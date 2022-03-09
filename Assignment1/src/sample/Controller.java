@@ -135,6 +135,8 @@ public class Controller {
 
     public int[] arrayOfPixels;
 
+    public int[] arrayOfDisjointSets;
+
     public PixelReader pixelReader;
 
     @FXML
@@ -480,8 +482,8 @@ public class Controller {
 
     public void unionUse() {
 
-        Image image = imageView.getImage();
-
+       // Image image = imageView.getImage();
+            Image image = componentChoose.getImage();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
@@ -532,6 +534,12 @@ public class Controller {
     }
 
     public void rectangleMark(MouseEvent mouseEvent) {
+
+      //  make an array list using the java one and just have only store the disjoint sets if they match your condititons from the if statement
+      //  and then in the foreach loop rather than having arrayofpixels, you put in the name of the arraylist you made
+
+
+
         int pixelCount = 0;
 
         Image image = imageView.getImage();
@@ -543,7 +551,7 @@ public class Controller {
 
             pixelCount++;
             //pushing rectangle -1 in all directions so that we don't draw over the component
-            double maximumHeight = -1, minimumHeight = -1, leftSide = -1, rightSide = -1;
+            double maximumHeight = -2, minimumHeight = -2, leftSide = -2, rightSide = -2;
 
             for (int i = 0; i < arrayOfPixels.length; i++) {
                 int x = i % width;
@@ -551,7 +559,7 @@ public class Controller {
 
 
                 if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == id) {
-                    if (maximumHeight == -1) {
+                    if (maximumHeight == -2) {
                         maximumHeight = minimumHeight = y;
                         leftSide = rightSide = x;
                     } else {
@@ -565,11 +573,15 @@ public class Controller {
                 }
             }
 
-            componentChoose.setImage(image);
+            //componentChoose.setImage(image);
             //draw rectangles
             Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
-            componentLabel.setTranslateX(componentChoose.getLayoutX());
-            componentLabel.setTranslateY(componentChoose.getLayoutY());
+           // componentLabel.setTranslateX(componentChoose.getLayoutX());
+            //componentLabel.setTranslateY(componentChoose.getLayoutY());
+            //((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
+
+            componentLabel.setTranslateX(imageView.getLayoutX());
+            componentLabel.setTranslateY(imageView.getLayoutY());
             ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
             //rectangle colour and set inside colour to transparent as to show the highlighted component
             componentLabel.setStroke(Color.DEEPPINK);
