@@ -461,19 +461,41 @@ public class Controller {
 
             componentChoose.setImage(writableImage);
 
-            for (int c = 0; c < height; c++) {
-                for (int d = 0; d < width; d++) {
-                    if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
-                        union(arrayOfPixels, c * width + d, c * width + d + 1);
-                    }
-                    if (c < height - 1 && arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + width] != 0) {
-                        union(arrayOfPixels, c * width + d, c * width + d + width);
-                    }
-                }
-
-            }
+//            for (int c = 0; c < height; c++) {
+//                for (int d = 0; d < width; d++) {
+//                    if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
+//                        union(arrayOfPixels, c * width + d, c * width + d + 1);
+//                    }
+//                    if (c < height - 1 && arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + width] != 0) {
+//                        union(arrayOfPixels, c * width + d, c * width + d + width);
+//                    }
+//                }
+//
+//            }
 
         });
+
+
+    }
+
+    public void unionUse() {
+
+        Image image = imageView.getImage();
+
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+
+        for (int c = 0; c < height; c++) {
+            for (int d = 0; d < width; d++) {
+                if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
+                    union(arrayOfPixels, c * width + d, c * width + d + 1);
+                }
+                if (c < height - 1 && arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + width] != 0) {
+                    union(arrayOfPixels, c * width + d, c * width + d + width);
+                }
+            }
+
+        }
 
 
     }
@@ -487,22 +509,22 @@ public class Controller {
     }
 
     //Iterative version of find
-//    public static int find(int[] arrayOfPixels, int id) {
-//        while (arrayOfPixels[id] != id) id = arrayOfPixels[id];
-//        return id;
-//    }
-
-    public static int find(int[] a, int id) {
-        if(a[id]==id) {
-            id = 0;
-            return id;
-        }
-        while(a[id]!=id) {
-            a[id]=a[a[id]]; //Compress path
-            id=a[id];
-        }
+    public static int find(int[] arrayOfPixels, int id) {
+        while (arrayOfPixels[id] != id) id = arrayOfPixels[id];
         return id;
     }
+
+//    public static int find(int[] a, int id) {
+//        if(a[id]==id) {
+//            id = 0;
+//            return id;
+//        }
+//        while(a[id]!=id) {
+//            a[id]=a[a[id]]; //Compress path
+//            id=a[id];
+//        }
+//        return id;
+//    }
 
     //Quick union of disjoint sets containing elements p and q (Version 2)
     public static void union(int[] a, int p, int q) {
@@ -520,12 +542,13 @@ public class Controller {
         for (int id : arrayOfPixels) {
 
             pixelCount++;
-            //pushing rectangle -1 in all directions so we don't draw over the component
+            //pushing rectangle -1 in all directions so that we don't draw over the component
             double maximumHeight = -1, minimumHeight = -1, leftSide = -1, rightSide = -1;
 
             for (int i = 0; i < arrayOfPixels.length; i++) {
                 int x = i % width;
                 int y = i / width;
+
 
                 if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == id) {
                     if (maximumHeight == -1) {
@@ -543,89 +566,25 @@ public class Controller {
             }
 
             componentChoose.setImage(image);
+            //draw rectangles
             Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
             componentLabel.setTranslateX(componentChoose.getLayoutX());
             componentLabel.setTranslateY(componentChoose.getLayoutY());
             ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
+            //rectangle colour and set inside colour to transparent as to show the highlighted component
             componentLabel.setStroke(Color.DEEPPINK);
             componentLabel.setFill(Color.TRANSPARENT);
 
+            //call method
+            unionUse();
+
         }
     }
-        // groupClusters();
+
 
     }
 
 
-//        //change this
-//        public void groupClusters() {
-//
-//                Image image = imageView.getImage();
-//                for(int i = 0; i < arrayOfPixels.length - 1; i++) {
-//                        if (i < arrayOfPixels.length - image.getWidth() && arrayOfPixels[i] != -1 && arrayOfPixels[(int) (i + image.getWidth())] != -1) {
-//                            union(arrayOfPixels, i, (int) (i + image.getWidth()));
-//                        }
-//                        if (i < arrayOfPixels.length && arrayOfPixels[i] != -1 && arrayOfPixels[i + 1] != -1) {
-//                                union(arrayOfPixels, i, i + 1);
-//                        }
-//                        //missing line here
-//                        //no use of find yet
-//
-//                }
-//
-//        }
-//
-//Draw on the rectangles
-//        public void rectangleMark() {
-//                int pixelCount = 0;
-//
-//                Image image = imageView.getImage();
-//                int width = (int) image.getWidth();
-//                int height = (int) image.getHeight();
-//
-//
-//                for (int id : arrayOfPixels) {
-//
-//                        pixelCount++;
-//                        //pushing rectangle -1 in all directions so we don't draw over the component
-//                        double maximumHeight = -1, minimumHeight = -1, leftSide = -1, rightSide = -1;
-//
-//                        for (int i = 0; i < arrayOfPixels.length; i++) {
-//                                int x = i % width;
-//                                int y = i / width;
-//
-//                                if (arrayOfPixels[i] != -1 && find(arrayOfPixels, i) == id) {
-//                                        if (maximumHeight == -1) {
-//                                                maximumHeight = minimumHeight = y;
-//                                                leftSide = rightSide = x;
-//                                        } else {
-//                                                if (x < leftSide)
-//                                                        leftSide = x;
-//                                                if (x > rightSide)
-//                                                        rightSide = x;
-//                                                if (y > minimumHeight)
-//                                                        minimumHeight = y;
-//                                        }
-//                                }
-//                        }
-//
-//                        componentChoose.setImage(image);
-//                        Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
-//                        componentLabel.setTranslateX(componentChoose.getLayoutX());
-//                        componentLabel.setTranslateY(componentChoose.getLayoutY());
-//                        ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
-//                        componentLabel.setStroke(Color.PINK);
-//                        componentLabel.setFill(Color.TRANSPARENT);
-//
-//                }
-//               // groupClusters();
-//
-//        }
-
-
-//   }
-//        }
-//}
 
 
 
