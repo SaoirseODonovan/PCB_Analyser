@@ -18,7 +18,8 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.control.Slider;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Controller {
@@ -135,9 +136,9 @@ public class Controller {
 
     public int[] arrayOfPixels;
 
-    public int[] arrayOfDisjointSets;
-
     public PixelReader pixelReader;
+
+    ArrayList<Integer> arrayListOfDisjointSets = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -460,30 +461,20 @@ public class Controller {
 
                 }
             }
-
             componentChoose.setImage(writableImage);
-
-//            for (int c = 0; c < height; c++) {
-//                for (int d = 0; d < width; d++) {
-//                    if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
-//                        union(arrayOfPixels, c * width + d, c * width + d + 1);
-//                    }
-//                    if (c < height - 1 && arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + width] != 0) {
-//                        union(arrayOfPixels, c * width + d, c * width + d + width);
-//                    }
-//                }
-//
-//            }
-
         });
 
 
     }
 
-    public void unionUse() {
+    public void reduceNoise(){
 
+
+    }
+
+    public void unionUse() {
        // Image image = imageView.getImage();
-            Image image = componentChoose.getImage();
+        Image image = componentChoose.getImage();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
@@ -516,17 +507,6 @@ public class Controller {
         return id;
     }
 
-//    public static int find(int[] a, int id) {
-//        if(a[id]==id) {
-//            id = 0;
-//            return id;
-//        }
-//        while(a[id]!=id) {
-//            a[id]=a[a[id]]; //Compress path
-//            id=a[id];
-//        }
-//        return id;
-//    }
 
     //Quick union of disjoint sets containing elements p and q (Version 2)
     public static void union(int[] a, int p, int q) {
@@ -537,8 +517,9 @@ public class Controller {
 
       //  make an array list using the java one and just have only store the disjoint sets if they match your condititons from the if statement
       //  and then in the foreach loop rather than having arrayofpixels, you put in the name of the arraylist you made
+    //    for (int j = 0; j > arrayOfDisjointSets.length; j++) {
 
-
+     //   }
 
         int pixelCount = 0;
 
@@ -546,20 +527,28 @@ public class Controller {
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
+        for (int j = 0; j < arrayOfPixels.length; j++) {
+            if (arrayOfPixels[j] != 0 && !arrayListOfDisjointSets.contains(find(arrayOfPixels,j))) {
+                arrayListOfDisjointSets.add(find(arrayOfPixels,j));
+            }
+        }
 
-        for (int id : arrayOfPixels) {
+
+        for (int id : arrayListOfDisjointSets) {
 
             pixelCount++;
             //pushing rectangle -1 in all directions so that we don't draw over the component
-            double maximumHeight = -2, minimumHeight = -2, leftSide = -2, rightSide = -2;
+            double maximumHeight = -1,
+                    minimumHeight = -1,
+                    leftSide = -1,
+                    rightSide = -1;
 
             for (int i = 0; i < arrayOfPixels.length; i++) {
                 int x = i % width;
                 int y = i / width;
 
-
                 if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == id) {
-                    if (maximumHeight == -2) {
+                    if (maximumHeight == -1) {
                         maximumHeight = minimumHeight = y;
                         leftSide = rightSide = x;
                     } else {
@@ -573,13 +562,9 @@ public class Controller {
                 }
             }
 
-            //componentChoose.setImage(image);
+
             //draw rectangles
             Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
-           // componentLabel.setTranslateX(componentChoose.getLayoutX());
-            //componentLabel.setTranslateY(componentChoose.getLayoutY());
-            //((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
-
             componentLabel.setTranslateX(imageView.getLayoutX());
             componentLabel.setTranslateY(imageView.getLayoutY());
             ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
@@ -593,6 +578,52 @@ public class Controller {
         }
     }
 
+
+    public void randomColGenerate(MouseEvent mouseEvent) {
+        Image image = imageView.getImage();
+        PixelReader pixelReader = image.getPixelReader();
+        WritableImage writableImage = new WritableImage(pixelReader,
+                (int) image.getWidth(),
+                (int) image.getHeight());
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+        Random random = new Random();
+
+        for (int j : arrayListOfDisjointSets) {
+
+            var blueRand = random.nextInt(255);
+            var redRand = random.nextInt(255);
+            var greenRand = random.nextInt(255);
+            var randCol = Color.rgb(redRand, greenRand, blueRand);
+            var white = Color.WHITE;
+
+            int width = (int) image.getWidth();
+            int height = (int) image.getHeight();
+
+//            for (int i = 0; i < arrayOfPixels.length; i++) {
+//                if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == j) {
+//                    pixelWriter.setColor(i % width, i / height, randCol);
+//                } else if (arrayOfPixels[i] == 0 && find(arrayOfPixels, i) != j) {
+//                    pixelWriter.setColor(i % width, i / height, white);
+//                }
+//
+//
+//            }
+
+            for (int i = 0; i < arrayOfPixels.length; i++) {
+                if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) != j) {
+                    pixelWriter.setColor(i % width, i / width , randCol);
+                } else {
+                    pixelWriter.setColor(i % width, i / width, white);
+                }
+
+
+            }
+            }
+
+            componentChoose.setImage(writableImage);
+
+        }
 
     }
 

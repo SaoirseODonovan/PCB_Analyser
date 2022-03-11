@@ -108,7 +108,7 @@
                               <Font name="Times New Roman" size="13.0" />
                            </font>
                         </Label>
-                        <Button fx:id="union" layoutX="861.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#unionFind" text="Union" />
+                        <Button layoutX="861.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#randomColGenerate" text="Random Colour" />
                 </children>
                 </AnchorPane>
             </content>
