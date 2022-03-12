@@ -98,17 +98,18 @@
                            </font>
                         </Label>
                         <Button layoutX="861.0" layoutY="356.0" mnemonicParsing="false" onMouseClicked="#rectangleMark" text="Draw Rectangles" textFill="RED" />
-                        <Label layoutX="822.0" layoutY="389.0" text="Component counter:">
+                        <Label layoutX="822.0" layoutY="435.0" text="Component counter:">
                            <font>
                               <Font name="Times New Roman" size="13.0" />
                            </font>
                         </Label>
-                        <Label fx:id="compCounter" layoutX="936.0" layoutY="389.0" text="test">
+                        <Label fx:id="compCounter" layoutX="941.0" layoutY="435.0" text="test">
                            <font>
                               <Font name="Times New Roman" size="13.0" />
                            </font>
                         </Label>
                         <Button layoutX="861.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#randomColGenerate" text="Random Colour" />
+                        <Button layoutX="852.0" layoutY="389.0" mnemonicParsing="false" onMouseClicked="#compColour" text="Component Colour" />
                 </children>
                 </AnchorPane>
             </content>
