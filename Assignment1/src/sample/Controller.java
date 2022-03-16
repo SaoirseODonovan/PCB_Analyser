@@ -144,6 +144,9 @@ public class Controller {
 
     ArrayList<Integer> arrayListOfDisjointSets = new ArrayList<>();
 
+    ArrayList<Integer> toBeDeleted = new ArrayList<>(arrayListOfDisjointSets);
+
+
     @FXML
     public void initialize() {
 //                blueColor.setVisible(false);
@@ -153,7 +156,6 @@ public class Controller {
 //                brightness.setVisible(false);
 //                hue.setVisible(false);
         rgbTab.setDisable(true);
-
 
     }
 
@@ -498,6 +500,7 @@ public class Controller {
         a[find(a, q)] = find(a, p); //The root of q is made reference the root of p
     }
 
+
     public void rectangleMark(MouseEvent mouseEvent) {
 
         //  make an array list using the java one and just have only store the disjoint sets if they match your condititons from the if statement
@@ -512,6 +515,8 @@ public class Controller {
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
+        //arrayListOfDisjointSets.clear();
+
         for (int j = 0; j < arrayOfPixels.length; j++) {
             if (arrayOfPixels[j] != 0 && !arrayListOfDisjointSets.contains(find(arrayOfPixels, j))) {
                 arrayListOfDisjointSets.add(find(arrayOfPixels, j));
@@ -519,56 +524,56 @@ public class Controller {
         }
 
 
-        for (int id : arrayListOfDisjointSets) { //foreach loop going through array list of disjoint set
+            for (int id : arrayListOfDisjointSets) { //foreach loop going through array list of disjoint set
 
-            pixelCount++; //used to count how many times the method is run
-            //pushing rectangle -1 in all directions so that we don't draw over the component
-            double maximumHeight = -1;
-            double minimumHeight = -1;
-            double leftSide = -1;
-            double rightSide = -1;
+                pixelCount++; //used to count how many times the method is run
+                //pushing rectangle -1 in all directions so that we don't draw over the component
+                double maximumHeight = -1;
+                double minimumHeight = -1;
+                double leftSide = -1;
+                double rightSide = -1;
 
-            //loop through array of pixels
-            for (int i = 0; i < arrayOfPixels.length; i++) {
-                //scanning through image and declaring x and y
-                int x = i % width;
-                int y = i / width;
+                //loop through array of pixels
+                for (int i = 0; i < arrayOfPixels.length; i++) {
+                    //scanning through image and declaring x and y
+                    int x = i % width;
+                    int y = i / width;
 
-                //loop through array of pixels but for every pixel that's not equal to 0 and has an ID that is already equal to one of our unique ID's
-                //once it comes across a pixel of these conditions, it checks if your maximumHeight is set to -1
-                if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == id) {
-                    if (maximumHeight == -1) {
-                        maximumHeight = minimumHeight = y;
-                        leftSide = rightSide = x;
-                    } else {
-                        if (x < leftSide)
-                            leftSide = x;
-                        if (x > rightSide)
-                            rightSide = x;
-                        if (y > minimumHeight)
-                            minimumHeight = y;
+                    //loop through array of pixels but for every pixel that's not equal to 0 and has an ID that is already equal to one of our unique ID's
+                    //once it comes across a pixel of these conditions, it checks if your maximumHeight is set to -1
+                    if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == id) {
+                        if (maximumHeight == -1) {
+                            maximumHeight = minimumHeight = y;
+                            leftSide = rightSide = x;
+                        } else {
+                            if (x < leftSide)
+                                leftSide = x;
+                            if (x > rightSide)
+                                rightSide = x;
+                            if (y > minimumHeight)
+                                minimumHeight = y;
+                        }
                     }
                 }
+
+
+                //draw rectangles
+
+                if ((((leftSide - maximumHeight) * (rightSide - minimumHeight)) > 760 && (((leftSide - maximumHeight) * (rightSide - minimumHeight)) < 1000000))) {
+                    Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
+                    componentLabel.setTranslateX(imageView.getLayoutX());
+                    componentLabel.setTranslateY(imageView.getLayoutY());
+                    ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
+                    //rectangle colour and set inside colour to transparent as to show the highlighted component
+                    componentLabel.setStroke(Color.WHITE);
+                    componentLabel.setFill(Color.TRANSPARENT);
+                }
+
+                //call method
+                unionUse();
+
             }
-
-
-            //draw rectangles
-
-            if ((((leftSide-maximumHeight)*(rightSide-minimumHeight)) > 760 && (((leftSide-maximumHeight)*(rightSide-minimumHeight)) < 1000000))) {
-                Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
-                componentLabel.setTranslateX(imageView.getLayoutX());
-                componentLabel.setTranslateY(imageView.getLayoutY());
-                ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
-                //rectangle colour and set inside colour to transparent as to show the highlighted component
-                componentLabel.setStroke(Color.WHITE);
-                componentLabel.setFill(Color.TRANSPARENT);
-            }
-
-            //call method
-            unionUse();
-
         }
-    }
 
 
     public void randomColGenerate(MouseEvent mouseEvent) {
