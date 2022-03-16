@@ -134,9 +134,13 @@ public class Controller {
 
     public Color col;
 
+    //array of pixels within chosen image
+
     public int[] arrayOfPixels;
 
     public PixelReader pixelReader;
+
+    // arraylist of disjoint sets
 
     ArrayList<Integer> arrayListOfDisjointSets = new ArrayList<>();
 
@@ -155,14 +159,18 @@ public class Controller {
 
 
     public void openImage(ActionEvent actionEvent) {
-        //https://www.youtube.com/watch?v=AS0NhRKyRa4&t=15s
+        //file chooser to pick image and display it
+        //system.out.println to check if working
         System.out.println("Open file");
         FileChooser fileChooser = new FileChooser();
 
+        //file choosers require a reference to the stage to work
+        //pass to the stage
         File file = fileChooser.showOpenDialog(stage);
         System.out.println("Chosen file: " + file);
         Image chosenImage = new Image(file.toURI().toString(), imageView.getFitWidth(), imageView.getFitHeight(), false, true);
 
+        //fill all image view's with image
         imageView.setImage(chosenImage);
         grayImageView.setImage(chosenImage);
         hueChange.setImage(chosenImage);
@@ -172,9 +180,6 @@ public class Controller {
 
 
         System.out.println("Image displayed.");
-
-        //file choosers require a reference to the stage to work.
-        //will have to pass to the stage.
 
         //Red View
         Image redImage = imageView.getImage();
@@ -230,29 +235,6 @@ public class Controller {
             greenView.setImage(writableImage3);
         }
 
-        //hue Change
-        //https://java-buddy.blogspot.com/2012/12/create-and-adjust-color-using-hue.html
-//                adjHue = sliderHue.valueProperty().doubleValue();
-//
-//                Image hueImage = imageView.getImage();
-//                PixelReader pixelReader4 = hueImage.getPixelReader();
-//                WritableImage writableImage4 = new WritableImage(
-//                        (int) hueImage.getWidth(),
-//                        (int) hueImage.getHeight());
-//                PixelWriter pixelWriter4 = writableImage4.getPixelWriter();
-//
-//                for (int y = 0; y < hueImage.getHeight(); y++){
-//                        for (int x = 0; x < hueImage.getWidth(); x++){
-//                                Color color = pixelReader.getColor(x, y);
-//                                pixelWriter.setColor(x, y, color);
-//
-//                                double hue = color.getHue() + adjHue;
-//                                if(hue > 360.0){
-//                                        hue = hue - 360;
-//                                }else if(hue < 0.0){
-//                                        hue = hue + 360.0;
-//                                }
-
     }
 
     private Stage stage;
@@ -265,12 +247,14 @@ public class Controller {
         System.exit(0);
     }
 
+    //black and white conversion
+
     public void grayscaleChange(MouseEvent mouseEvent) {
         Image image = imageView.getImage();
         PixelReader pixelReader = image.getPixelReader();
         System.out.println("Image Width: " + image.getWidth());
         System.out.println("Image Height: " + image.getHeight());
-        // Create WritableImage
+        //create WritableImage
         WritableImage writableImage = new WritableImage(
                 (int) image.getWidth(),
                 (int) image.getHeight());
@@ -282,6 +266,7 @@ public class Controller {
                 double r = color.getRed();
                 double g = color.getGreen();
                 double b = color.getBlue();
+                //cast int here
                 int red = (int) ((r + g + b) / 3 * 255);
                 int green = (int) ((r + g + b) / 3 * 255);
                 int blue = (int) ((r + g + b) / 3 * 255);
@@ -400,6 +385,7 @@ public class Controller {
         tabControlPane.getSelectionModel().select(rgbTab);
     }
 
+    //showing chosen component with similar pixel colour range to black
     public void blackIdentify(MouseEvent mouseEvent) {
 
         imageView.setOnMouseClicked(e -> {
@@ -441,7 +427,7 @@ public class Controller {
                     var blueLabel = Double.parseDouble(blueVal.getText());
                     var hueLabel = Double.parseDouble(hueVal.getText());
 
-                    if ((Red > redLabel - 0.10) && (Red < redLabel + 0.10)
+                    if ((Red > redLabel - 0.40) && (Red < redLabel + 0.40)
                             && (Blue > blueLabel - 0.10) && (Blue < blueLabel + 0.10)
                             && (Green > greenLabel - 0.10) && (Green < greenLabel + 0.10)
                             && (Hue > hueLabel - 2) && (Hue < hueLabel + 2)) {
@@ -533,19 +519,23 @@ public class Controller {
         }
 
 
-        for (int id : arrayListOfDisjointSets) {
+        for (int id : arrayListOfDisjointSets) { //foreach loop going through array list of disjoint set
 
-            pixelCount++;
+            pixelCount++; //used to count how many times the method is run
             //pushing rectangle -1 in all directions so that we don't draw over the component
             double maximumHeight = -1;
             double minimumHeight = -1;
             double leftSide = -1;
             double rightSide = -1;
 
+            //loop through array of pixels
             for (int i = 0; i < arrayOfPixels.length; i++) {
+                //scanning through image and declaring x and y
                 int x = i % width;
                 int y = i / width;
 
+                //loop through array of pixels but for every pixel that's not equal to 0 and has an ID that is already equal to one of our unique ID's
+                //once it comes across a pixel of these conditions, it checks if your maximumHeight is set to -1
                 if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == id) {
                     if (maximumHeight == -1) {
                         maximumHeight = minimumHeight = y;
@@ -564,13 +554,13 @@ public class Controller {
 
             //draw rectangles
 
-            if ((((leftSide-maximumHeight)*(rightSide-minimumHeight)) > 560 && (((leftSide-maximumHeight)*(rightSide-minimumHeight)) < 1000000))) {
+            if ((((leftSide-maximumHeight)*(rightSide-minimumHeight)) > 760 && (((leftSide-maximumHeight)*(rightSide-minimumHeight)) < 1000000))) {
                 Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
                 componentLabel.setTranslateX(imageView.getLayoutX());
                 componentLabel.setTranslateY(imageView.getLayoutY());
                 ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
                 //rectangle colour and set inside colour to transparent as to show the highlighted component
-                componentLabel.setStroke(Color.DEEPPINK);
+                componentLabel.setStroke(Color.WHITE);
                 componentLabel.setFill(Color.TRANSPARENT);
             }
 
@@ -593,9 +583,12 @@ public class Controller {
 
         for (int j : arrayListOfDisjointSets) {
 
+            //will not exceed 255, range between 1 and 255
+
             var blueRand = random.nextInt(255);
             var redRand = random.nextInt(255);
             var greenRand = random.nextInt(255);
+            //variable to store random colour based on varying rgb values
             var randCol = Color.rgb(redRand, greenRand, blueRand);
             var white = Color.WHITE;
 
@@ -604,13 +597,23 @@ public class Controller {
 
 
             for (int i = 0; i < arrayOfPixels.length; i++) {
-                if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) != j) {
+                //only colours pixel after
+                //scanning through array of pixels, looping through each item
+                //root that you found is not equal to j
+                if (arrayOfPixels[i] != 0 && find(arrayOfPixels, i) == j) {
                     pixelWriter.setColor(i % width, i / width, randCol);
-                } else if (arrayOfPixels[i] == 0 && find(arrayOfPixels, i) == j) {
+//                } else if (arrayOfPixels[i] == 0 && find(arrayOfPixels, i) == j) {
+//                    pixelWriter.setColor(i % width, i / width, white);
+//                }
+                }
+                //  else if (!arrayListOfDisjointSets.contains(find(arrayOfPixels,i)))
+                else if (arrayOfPixels[i] == 0 && find(arrayOfPixels, i) != i) {
                     pixelWriter.setColor(i % width, i / width, white);
+                    //}
                 }
             }
             componentChoose.setImage(writableImage);
+
         }
     }
 

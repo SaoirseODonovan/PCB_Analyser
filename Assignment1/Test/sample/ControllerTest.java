@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class ControllerTest {
 @Test
     public void testUnion(){
-        ArrayList<Integer> arrayList = new ArrayList();
+        ArrayList<Integer> arrayList = new ArrayList<>();
         int width = 5;
         int height = 5;
         int i = 0;
