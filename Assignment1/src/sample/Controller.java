@@ -19,6 +19,7 @@ import javafx.scene.control.Slider;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -149,15 +150,30 @@ public class Controller {
 
     @FXML
     public void initialize() {
+//                int[] toBeDeletedArray = new int[0];
+//                for (int i = 0; i < arrayListOfDisjointSets.size(); i++){
+//                    toBeDeletedArray[i] = arrayListOfDisjointSets.get(i);
+//                    System.out.println(i);
+//                }
+//                // Setting default value to empty array
+//                System.out.println("After Clearing Array:");
+//                Arrays.fill(toBeDeletedArray, 0);
+//                for (int i : toBeDeletedArray) {
+//                    System.out.println(i);
+//                }
+
+        rgbTab.setDisable(true);
+            }
+
+
+
 //                blueColor.setVisible(false);
 //                redColor.setVisible(false);
 //                greenColor.setVisible(false);
 //                saturation.setVisible(false);
 //                brightness.setVisible(false);
 //                hue.setVisible(false);
-        rgbTab.setDisable(true);
 
-    }
 
 
     public void openImage(ActionEvent actionEvent) {
@@ -387,7 +403,7 @@ public class Controller {
         tabControlPane.getSelectionModel().select(rgbTab);
     }
 
-    //showing chosen component with similar pixel colour range to black
+    //showing chosen component with similar pixel colour range in black
     public void blackIdentify(MouseEvent mouseEvent) {
 
         imageView.setOnMouseClicked(e -> {
@@ -395,6 +411,7 @@ public class Controller {
             int y = (int) e.getY();
             pixelReader = imageView.getImage().getPixelReader();
 
+            //labels displaying different values in relation to a chosen pixel, to two significant figures so that values aren't extensive
             redVal.setText(String.format("%.2f", pixelReader.getColor(x, y).getRed()));
             greenVal.setText(String.format("%.2f", pixelReader.getColor(x, y).getGreen()));
             satVal.setText(String.format("%.2f", pixelReader.getColor(x, y).getSaturation()));
@@ -429,6 +446,7 @@ public class Controller {
                     var blueLabel = Double.parseDouble(blueVal.getText());
                     var hueLabel = Double.parseDouble(hueVal.getText());
 
+                    //comparing values to identify components and display pixels of similar value range as black
                     if ((Red > redLabel - 0.40) && (Red < redLabel + 0.40)
                             && (Blue > blueLabel - 0.10) && (Blue < blueLabel + 0.10)
                             && (Green > greenLabel - 0.10) && (Green < greenLabel + 0.10)
@@ -439,6 +457,8 @@ public class Controller {
 
 
                     } else {
+
+                        //everything else is coloured white
                         pixelWriter.setColor(b, a, Color.WHITE);
                         arrayOfPixels[i] = 0;
                     }
@@ -459,17 +479,22 @@ public class Controller {
 
     }
 
+    //union
     public void unionUse() {
-        // Image image = imageView.getImage();
         Image image = componentChoose.getImage();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
 
         for (int c = 0; c < height; c++) {
             for (int d = 0; d < width; d++) {
+                //going through height and width of image
+                //going through array of pixels and performing math, on board
+                //checking if not equal to zero, if not it will check the pixel beside it and perform same check
+                //if its also not equal to 0, union them
                 if (arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + 1] != 0) {
                     union(arrayOfPixels, c * width + d, c * width + d + 1);
                 }
+                //same but checks the pixel below, this is done by + width
                 if (c < height - 1 && arrayOfPixels[c * width + d] != 0 && arrayOfPixels[c * width + d + width] != 0) {
                     union(arrayOfPixels, c * width + d, c * width + d + width);
                 }
@@ -503,12 +528,10 @@ public class Controller {
 
     public void rectangleMark(MouseEvent mouseEvent) {
 
-        //  make an array list using the java one and just have only store the disjoint sets if they match your condititons from the if statement
-        //  and then in the foreach loop rather than having arrayofpixels, you put in the name of the arraylist you made
-        //    for (int j = 0; j > arrayOfDisjointSets.length; j++) {
+        //i must make an array list using the java one and just have store the disjoint sets if they match the conditions from the if statement
+        //then in the foreach loop rather than having arrayofpixels, put name of the arraylist made
 
-        //   }
-
+        //counter
         int pixelCount = 0;
 
         Image image = imageView.getImage();
@@ -518,7 +541,11 @@ public class Controller {
         //arrayListOfDisjointSets.clear();
 
         for (int j = 0; j < arrayOfPixels.length; j++) {
+            //arrayOfPixels[j], iterating through list and getting value at each position
+            //goes through arrayListOfDisjointSets, which contains an id for every set which is the the root, this if statement
+            //makes sure that duplicate roots aren't stored
             if (arrayOfPixels[j] != 0 && !arrayListOfDisjointSets.contains(find(arrayOfPixels, j))) {
+                //adds root id if not there already
                 arrayListOfDisjointSets.add(find(arrayOfPixels, j));
             }
         }
