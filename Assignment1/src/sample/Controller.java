@@ -419,6 +419,7 @@ public class Controller {
             hueVal.setText(String.format("%.2f", pixelReader.getColor(x, y).getHue()));
             blueVal.setText(String.format("%.2f", pixelReader.getColor(x, y).getBlue()));
 
+
             Image image = imageView.getImage();
             PixelReader pixelReader = image.getPixelReader();
             WritableImage writableImage = new WritableImage(
@@ -441,16 +442,20 @@ public class Controller {
                     var Blue = color.getBlue();
                     var Green = color.getGreen();
                     var Hue = color.getHue();
+                    var Brightness = color.getBrightness();
+                    var Saturation = color.getSaturation();
+                    var brightnessLabel = Double.parseDouble(brightVal.getText());
+                    var saturationLabel = Double.parseDouble(satVal.getText());
                     var redLabel = Double.parseDouble(redVal.getText());
                     var greenLabel = Double.parseDouble(greenVal.getText());
                     var blueLabel = Double.parseDouble(blueVal.getText());
                     var hueLabel = Double.parseDouble(hueVal.getText());
 
                     //comparing values to identify components and display pixels of similar value range as black
-                    if ((Red > redLabel - 0.40) && (Red < redLabel + 0.40)
-                            && (Blue > blueLabel - 0.10) && (Blue < blueLabel + 0.10)
-                            && (Green > greenLabel - 0.10) && (Green < greenLabel + 0.10)
-                            && (Hue > hueLabel - 2) && (Hue < hueLabel + 2)) {
+                    if ((Red > redLabel - 0.30) && (Red < redLabel + 0.30)
+                            && (Blue > blueLabel - 0.30) && (Blue < blueLabel + 0.30)
+                            && (Green > greenLabel - 0.30) && (Green < greenLabel + 0.30)
+                            && (Hue > hueLabel - 8) && (Hue < hueLabel + 8) && (Brightness > brightnessLabel - 2) && (Brightness < brightnessLabel + 2) && (Saturation > saturationLabel - 2) && (Saturation < saturationLabel + 2)) {
                         pixelWriter.setColor(b, a, Color.BLACK);
 
                         arrayOfPixels[i] = i;
@@ -533,7 +538,7 @@ public class Controller {
 
         //counter
         int pixelCount = 0;
-
+        int componentDisplay = 0;
         Image image = imageView.getImage();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
@@ -586,8 +591,11 @@ public class Controller {
 
                 //draw rectangles
 
-                if ((((leftSide - maximumHeight) * (rightSide - minimumHeight)) > 760 && (((leftSide - maximumHeight) * (rightSide - minimumHeight)) < 1000000))) {
+
+                //noise reduction
+                if ((((leftSide - maximumHeight) * (rightSide - minimumHeight)) > 500 && (((leftSide - maximumHeight) * (rightSide - minimumHeight)) < 1000000))) {
                     Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
+                    componentDisplay++;
                     componentLabel.setTranslateX(imageView.getLayoutX());
                     componentLabel.setTranslateY(imageView.getLayoutY());
                     ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
@@ -595,6 +603,8 @@ public class Controller {
                     componentLabel.setStroke(Color.WHITE);
                     componentLabel.setFill(Color.TRANSPARENT);
                 }
+
+                compCounter.setText(String.valueOf(componentDisplay));
 
                 //call method
                 unionUse();
