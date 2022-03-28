@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -17,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.control.Slider;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -452,12 +454,17 @@ public class Controller {
                     var hueLabel = Double.parseDouble(hueVal.getText());
 
                     //comparing values to identify components and display pixels of similar value range as black
-                    if ((Red > redLabel - 0.30) && (Red < redLabel + 0.30)
-                            && (Blue > blueLabel - 0.30) && (Blue < blueLabel + 0.30)
-                            && (Green > greenLabel - 0.30) && (Green < greenLabel + 0.30)
-                            && (Hue > hueLabel - 8) && (Hue < hueLabel + 8) && (Brightness > brightnessLabel - 2) && (Brightness < brightnessLabel + 2) && (Saturation > saturationLabel - 2) && (Saturation < saturationLabel + 2)) {
-                        pixelWriter.setColor(b, a, Color.BLACK);
+//                    if ((Red > redLabel - 0.30) && (Red < redLabel + 0.30)
+//                            && (Blue > blueLabel - 0.30) && (Blue < blueLabel + 0.30)
+//                            && (Green > greenLabel - 0.30) && (Green < greenLabel + 0.30)
+//                            && (Hue > hueLabel - 8) && (Hue < hueLabel + 8) && (Brightness > brightnessLabel - 2) && (Brightness < brightnessLabel + 2) && (Saturation > saturationLabel - 2) && (Saturation < saturationLabel + 2)) {
+//                        pixelWriter.setColor(b, a, Color.BLACK);
 
+                        if ((Red > redLabel - 0.10) && (Red < redLabel + 0.10)
+                                && (Blue > blueLabel - 0.10) && (Blue < blueLabel + 0.10)
+                                && (Green > greenLabel - 0.10) && (Green < greenLabel + 0.10)
+                                && (Hue > hueLabel - 2) && (Hue < hueLabel + 2)) {
+                            pixelWriter.setColor(b, a, Color.BLACK);
                         arrayOfPixels[i] = i;
 
 
@@ -510,6 +517,17 @@ public class Controller {
 
     }
 
+    //gets the area, no. of pixels, in each disjoint set
+    public int disjointSetArea(int num, int[] array) {
+        var s = 0;
+        //counts pixels in disjoint set by comparing number entered to root value
+        for (int i = 0; i < array.length; i++) {
+        if (num == find(array,i)){
+            s++;
+        }
+        }
+        return s;
+    }
 
     public void unionFind(MouseEvent mouseEvent) {
 
@@ -542,8 +560,10 @@ public class Controller {
         Image image = imageView.getImage();
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
+        Rectangle rect = new Rectangle();
 
-        //arrayListOfDisjointSets.clear();
+        ((AnchorPane) componentChoose.getParent()).getChildren().removeAll(rect);
+
 
         for (int j = 0; j < arrayOfPixels.length; j++) {
             //arrayOfPixels[j], iterating through list and getting value at each position
@@ -593,25 +613,35 @@ public class Controller {
 
 
                 //noise reduction
-                if ((((leftSide - maximumHeight) * (rightSide - minimumHeight)) > 500 && (((leftSide - maximumHeight) * (rightSide - minimumHeight)) < 1000000))) {
-                    Rectangle componentLabel = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
+                if ((((leftSide - maximumHeight) * (rightSide - minimumHeight)) > 2000 && (((leftSide - maximumHeight) * (rightSide - minimumHeight)) < 1000000))) {
+                    rect = new Rectangle(leftSide, maximumHeight, rightSide - leftSide, minimumHeight - maximumHeight);
                     componentDisplay++;
-                    componentLabel.setTranslateX(imageView.getLayoutX());
-                    componentLabel.setTranslateY(imageView.getLayoutY());
-                    ((AnchorPane) componentChoose.getParent()).getChildren().add(componentLabel);
+                    rect.setTranslateX(imageView.getLayoutX());
+                    rect.setTranslateY(imageView.getLayoutY());
+                    ((AnchorPane) componentChoose.getParent()).getChildren().add(rect);
                     //rectangle colour and set inside colour to transparent as to show the highlighted component
-                    componentLabel.setStroke(Color.WHITE);
-                    componentLabel.setFill(Color.TRANSPARENT);
+                    rect.setStroke(Color.DEEPPINK);
+                    rect.setFill(Color.TRANSPARENT);
+
+                    Tooltip t = new Tooltip();
+                    //display labels with component number and area of disjoint set
+                    //id to represent root number of every disjoint set
+                    t.setText("Component Number: " + componentDisplay + "\n Component Area (in pixels): " + disjointSetArea(id, arrayOfPixels));
+
+
+
+                    Tooltip.install(rect, t);
                 }
 
                 compCounter.setText(String.valueOf(componentDisplay));
+
+
 
                 //call method
                 unionUse();
 
             }
         }
-
 
     public void randomColGenerate(MouseEvent mouseEvent) {
         Image image = imageView.getImage();
